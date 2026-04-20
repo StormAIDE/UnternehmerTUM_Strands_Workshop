@@ -1,0 +1,38 @@
+# Environment
+.env
+.env.local
+venv/
+env/
+ENV/
+unternehmer_env/
+
+# Workshop instructor files
+WORKSHOP_GUIDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+WORKSHOP_GUIDE.md
+CLAUDE.md

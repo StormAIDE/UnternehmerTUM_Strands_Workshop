@@ -1,0 +1,200 @@
+"""
+Orchestrator Agent - Routes requests to specialized agents
+"""
+from strands import Agent
+from strands.models import BedrockModel
+import os
+from dotenv import load_dotenv
+
+# Import specialized agents
+from agents.flight_agent import create_flight_agent
+from agents.hotel_agent import create_hotel_agent
+from agents.itinerary_agent import create_itinerary_agent
+from agents.destination_agent import create_destination_agent
+from agents.template_agent import create_template_agent
+
+# Load environment variables
+load_dotenv()
+
+
+def create_orchestrator():
+    """
+    Create the main orchestrator agent with all specialized agents.
+
+    The orchestrator routes user requests to the appropriate specialist agent.
+    """
+    # Configure Bedrock model
+    model_id = os.getenv("BEDROCK_MODEL_ID", "anthropic.claude-sonnet-4-20250514-v1:0")
+    aws_region = os.getenv("AWS_REGION", "us-east-1")
+
+    print(f"🌍 Using AWS Region: {aws_region}")
+    print(f"🤖 Using Model: {model_id}")
+
+    # Note: AWS region is configured via AWS_REGION environment variable
+    # Boto3 (used by BedrockModel) automatically reads AWS_REGION from environment
+
+    # Add session token if provided (for temporary credentials)
+    session_token = os.getenv("AWS_SESSION_TOKEN")
+    if session_token:
+        print("🔑 Using temporary AWS credentials with session token")
+
+    try:
+        model = BedrockModel(model_id=model_id)
+    except Exception as e:
+        print(f"Error initializing Bedrock model: {e}")
+        print("Make sure your AWS credentials are configured correctly.")
+        raise
+
+    # Create all specialized agents
+    flight_agent = create_flight_agent(model)
+    hotel_agent = create_hotel_agent(model)
+    itinerary_agent = create_itinerary_agent(model)
+    destination_agent = create_destination_agent(model)
+
+    # Include template agent (student's custom agent)
+    try:
+        template_agent = create_template_agent(model)
+        agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, template_agent]
+    except Exception as e:
+        print(f"Note: Template agent not fully configured yet: {e}")
+        agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent]
+
+    # Create orchestrator with all agents as tools
+    orchestrator_prompt = """You are a Travel Booking Orchestrator.
+
+Your role is to help users plan and book their travel by coordinating with specialized agents:
+
+1. **Flight Agent** - Search and book flights
+2. **Hotel Agent** - Find and book hotels
+3. **Itinerary Agent** - Plan activities, check weather, create itineraries
+4. **Destination Agent** - Provide city guides, local tips, currency info
+5. **Template Agent** - Custom agent built by workshop participants
+
+When a user asks for help:
+- Understand what they need
+- Route the request to the appropriate specialist agent(s)
+- You can use multiple agents if needed (e.g., flights + hotels + itinerary)
+- Provide a helpful, friendly response
+
+Always be conversational and helpful. If you're not sure which agent to use, ask clarifying questions.
+"""
+
+    orchestrator = Agent(
+        name="travel_orchestrator",
+        model=model,
+        system_prompt=orchestrator_prompt,
+        tools=agents  # Agents can be used as tools!
+    )
+
+    return orchestrator
+
+
+def chat_with_orchestrator(orchestrator, message: str):
+    """
+    Send a message to the orchestrator and return the response.
+    Non-streaming version for simple use cases.
+
+    Args:
+        orchestrator: The orchestrator agent
+        message: User's message
+
+    Returns:
+        Agent's response text
+    """
+    try:
+        result = orchestrator(message)
+        # Extract text from message format
+        if isinstance(result.message, dict) and 'content' in result.message:
+            content = result.message['content']
+            if isinstance(content, list) and len(content) > 0:
+                return content[0].get('text', str(result.message))
+        return str(result.message)
+    except Exception as e:
+        return f"Error processing request: {str(e)}"
+
+
+async def chat_with_orchestrator_stream_async(orchestrator, message: str):
+    """
+    Send a message to the orchestrator and stream the response asynchronously.
+
+    Yields the full accumulated text at each step for Streamlit to display.
+
+    Args:
+        orchestrator: The orchestrator agent
+        message: User's message
+
+    Yields:
+        Full accumulated text at each streaming update
+    """
+    try:
+        # Use stream_async to get real-time responses
+        async for event in orchestrator.stream_async(message):
+            # Extract and yield accumulated text from streaming events
+            if isinstance(event, dict):
+                # Check for data field (accumulated text generation)
+                if "data" in event:
+                    # Yield the full accumulated text
+                    # Streamlit will handle displaying it progressively
+                    yield event["data"]
+    except Exception as e:
+        yield f"\n\nError processing request: {str(e)}"
+
+
+def chat_with_orchestrator_stream(orchestrator, message: str):
+    """
+    Synchronous wrapper for streaming (for non-async contexts).
+
+    Args:
+        orchestrator: The orchestrator agent
+        message: User's message
+
+    Yields:
+        Text chunks as they are generated
+    """
+    import asyncio
+
+    # Create or get event loop
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+    # Run the async generator
+    async def run():
+        async for chunk in chat_with_orchestrator_stream_async(orchestrator, message):
+            yield chunk
+
+    # Convert async generator to sync
+    gen = run()
+    while True:
+        try:
+            chunk = loop.run_until_complete(gen.__anext__())
+            yield chunk
+        except StopAsyncIteration:
+            break
+
+
+# Test function
+if __name__ == "__main__":
+    print("Initializing Travel Booking Orchestrator...")
+
+    try:
+        orchestrator = create_orchestrator()
+        print("✅ Orchestrator initialized successfully!")
+        print("\nTry asking: 'Find me flights from Munich to Tokyo'")
+        print("\nStarting interactive chat (type 'exit' to quit):\n")
+
+        while True:
+            user_input = input("You: ")
+            if user_input.lower() in ['exit', 'quit']:
+                break
+
+            response = chat_with_orchestrator(orchestrator, user_input)
+            print(f"\nAssistant: {response}\n")
+
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        print("\nMake sure you have:")
+        print("1. Created a .env file with AWS credentials")
+        print("2. Installed all requirements (pip install -r requirements.txt)")
