@@ -26,12 +26,10 @@ Welcome to the **AWS Strands SDK Workshop**! In this hands-on session, you'll le
 
 ```python
 # Example: Using a community tool
-from strands_community_tools import web_search
+from strands_tools import calculator
 
-@tool
-def search_destinations(query: str) -> str:
-    """Search for travel destinations."""
-    return web_search(query)
+agent = Agent(tools=[calculator])
+
 ```
 
 ---
