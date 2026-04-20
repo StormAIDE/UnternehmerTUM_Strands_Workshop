@@ -115,6 +115,17 @@ cat demo_data/README.md
 
 ## 🛠️ Workshop Challenge: Build Your Own Agent!
 
+### ✨ Simple Process - Create 2 New Files!
+
+**You will create:**
+1. `tools/your_agent_tools.py` - Create your tools
+2. `agents/your_agent.py` - Configure your agent
+3. Register in `orchestrator.py` - Add 3 lines of code
+
+**That's it!** Follow the examples from existing agents. The template files are just reference - create your own!
+
+---
+
 ### ⚡ IMPORTANT: Use Demo Data (No Mock Data Creation Needed!)
 
 **We've provided ready-to-use datasets in the `demo_data/` folder so you can focus on learning Strands SDK!**
@@ -145,34 +156,13 @@ Pick one or create your own:
 - 📸 **Photo Spots Finder** - Instagram-worthy locations
 - 🎒 **Packing List Generator** - Smart packing suggestions
 
-### Step 2: Edit the Template
+### Step 2: Create Your Tool File
 
-Open `agents/template_agent.py` and change **3 things**:
-
-#### 1. Agent Name
-```python
-AGENT_NAME = "Restaurant Recommender"  # Change this
-```
-
-#### 2. System Prompt
-```python
-SYSTEM_PROMPT = """You are a Restaurant Recommendation Specialist.
-
-Your role:
-- Recommend restaurants based on cuisine preferences
-- Consider budget constraints
-- Provide information about local dining culture
-
-Always provide 3-5 specific recommendations with details.
-"""
-```
-
-#### 3. Create Tools
-
-**Two easy options:**
+Create a new file `tools/restaurant_tools.py` (or your agent name):
 
 **Option A: Use demo_data (recommended)**
 ```python
+from strands import tool
 from demo_data.restaurants import RESTAURANTS
 
 @tool
@@ -189,6 +179,8 @@ def recommend_restaurants(city: str, budget: str) -> str:
 
 **Option B: Simple strings (no imports)**
 ```python
+from strands import tool
+
 @tool
 def recommend_restaurants(city: str, cuisine: str, budget: str) -> str:
     """Recommend restaurants based on city, cuisine, and budget."""
@@ -205,33 +197,86 @@ def recommend_restaurants(city: str, cuisine: str, budget: str) -> str:
 
 **💡 See `demo_data/README.md` for more datasets and examples!**
 
-Add your tool to the agent:
+### Step 3: Create Your Agent File
+
+Create a new file `agents/restaurant_agent.py` (match your tool name):
+
 ```python
-def create_template_agent(model):
+from strands import Agent
+import sys
+import os
+
+# Add parent directory to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from tools.restaurant_tools import recommend_restaurants
+
+AGENT_NAME = "restaurant_agent"
+
+SYSTEM_PROMPT = """You are a Restaurant Recommendation Specialist.
+
+Your role:
+- Recommend restaurants based on cuisine preferences
+- Consider budget constraints
+- Provide information about local dining culture
+
+Always provide 3-5 specific recommendations with details.
+"""
+
+def create_restaurant_agent(model):
     agent = Agent(
         name=AGENT_NAME,
         model=model,
         system_prompt=SYSTEM_PROMPT,
         tools=[
-            recommend_restaurants,  # Your tool here!
+            recommend_restaurants,
         ]
     )
     return agent
 ```
 
-### Step 3: Test Your Agent
+### Step 4: Register in Orchestrator
 
-1. Save the file (`Ctrl+S` or `Cmd+S`)
+Edit `orchestrator.py` to add your agent (3 simple edits):
+
+**Edit 1: Add import (around line 14)**
+```python
+from agents.restaurant_agent import create_restaurant_agent
+```
+
+**Edit 2: Create instance (around line 64)**
+```python
+restaurant_agent = create_restaurant_agent(model)
+```
+
+**Edit 3: Add to agents list (same line 64)**
+```python
+agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, template_agent, restaurant_agent]
+```
+
+### Step 5: Test Your Agent
+
+1. Save all three files (`Ctrl+S` or `Cmd+S`)
 2. Restart Streamlit:
    ```bash
    # Press Ctrl+C to stop, then run again
    streamlit run app.py
    ```
-3. Your agent is automatically registered! Try queries like:
+3. Try queries like:
    - "Recommend restaurants in Paris for Italian food"
    - "Find budget-friendly places in Tokyo"
 
 ---
+
+### 📝 Quick Reference: What Files to Look At
+
+- **Example tools**: `tools/flight_tools.py`, `tools/hotel_tools.py`
+- **Example agents**: `agents/flight_agent.py`, `agents/hotel_agent.py`
+- **Template files**: `tools/template_tools.py`, `agents/template_agent.py` (for reference only - create your own files!)
+- **Demo data**: `demo_data/README.md` (all available datasets)
+
+---
+
 
 ## 📁 Project Structure
 
@@ -240,15 +285,16 @@ UnternehmerTUM_Workshop/
 ├── app.py                      # Streamlit web interface
 ├── orchestrator.py             # Main orchestrator agent
 ├── agents/
-│   ├── flight_agent.py        # Flight search & booking
-│   ├── hotel_agent.py         # Hotel search & booking
-│   ├── itinerary_agent.py     # Trip planning
-│   ├── destination_agent.py   # City guides
-│   └── template_agent.py      # YOUR AGENT - start here!
+│   ├── flight_agent.py        # Flight agent (imports flight_tools)
+│   ├── hotel_agent.py         # Hotel agent (imports hotel_tools)
+│   ├── itinerary_agent.py     # Trip planning agent
+│   ├── destination_agent.py   # City guides agent
+│   └── template_agent.py      # 🎯 YOUR AGENT - Edit this!
 ├── tools/
-│   ├── flight_tools.py        # Flight API tools
-│   ├── hotel_tools.py         # Hotel API tools
-│   └── weather_tools.py       # Weather API tools
+│   ├── flight_tools.py        # Flight tools
+│   ├── hotel_tools.py         # Hotel tools
+│   ├── weather_tools.py       # Weather tools
+│   └── template_tools.py      # 🎯 YOUR TOOLS - Create here!
 ├── demo_data/                  # 🎯 Ready-to-use datasets!
 │   ├── README.md              # How to use demo data
 │   ├── restaurants.py         # Restaurant data

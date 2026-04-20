@@ -13,6 +13,11 @@ from agents.itinerary_agent import create_itinerary_agent
 from agents.destination_agent import create_destination_agent
 from agents.template_agent import create_template_agent
 
+# 🎯 WORKSHOP PARTICIPANTS: To add more agents beyond template_agent:
+# 1. Create your_agent.py in agents/ folder
+# 2. Add import here: from agents.your_agent import create_your_agent
+# 3. Create instance below (line 56) and add to agents list (line 57)
+
 # Load environment variables
 load_dotenv()
 
@@ -54,7 +59,10 @@ def create_orchestrator():
     # Include template agent (student's custom agent)
     try:
         template_agent = create_template_agent(model)
+        # 🎯 WORKSHOP PARTICIPANTS: Add your additional agents here
+        # Example: your_agent = create_your_agent(model)
         agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, template_agent]
+        # 🎯 Then add to this list: agents = [..., template_agent, your_agent]
     except Exception as e:
         print(f"Note: Template agent not fully configured yet: {e}")
         agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent]
