@@ -9,6 +9,13 @@ INSTRUCTIONS:
 3. Add your own @tool functions (or modify the example ones)
 4. That's it! The orchestrator will automatically discover your agent.
 
+💡 THREE EASY OPTIONS:
+1. **Use demo_data** - Import from `demo_data/` folder (see `demo_data/README.md`)
+2. **Simple strings** - Just return formatted text: `return f"Weather in {city}: Sunny, 25°C"`
+3. **Community tools** - Use pre-built Strands tools (advanced): https://strandsagents.com/docs/user-guide/concepts/tools/community-tools-package/
+
+Focus on learning Strands SDK, not creating data!
+
 EXAMPLE IDEAS:
 - Restaurant Recommender 🍽️
 - Budget Calculator 💰
@@ -21,6 +28,12 @@ EXAMPLE IDEAS:
 """
 
 from strands import Agent, tool
+
+# Import demo data if you want to use it (optional!)
+# from demo_data.restaurants import RESTAURANTS
+# from demo_data.attractions import PHOTO_SPOTS
+# from demo_data.travel_info import USEFUL_PHRASES
+# See demo_data/README.md for all available data!
 
 
 # ========================================
@@ -60,7 +73,8 @@ def example_tool_one(city: str, param: str) -> str:
     Returns:
         Some useful information
     """
-    # TODO: Replace this with your logic!
+    # KEEP IT SIMPLE! Just return a string with basic info
+    # The AI agent will use this to help the user
     return f"This is example output for {city} with parameter {param}"
 
 
@@ -75,12 +89,102 @@ def example_tool_two(query: str) -> str:
     Returns:
         Response to the query
     """
-    # TODO: Add your implementation here!
+    # DON'T overthink the mock data - simple strings work great!
     return f"Processing query: {query}"
 
 
 # ========================================
-# Real Examples to Inspire You!
+# SIMPLE Examples - Easy to Copy! 🎯
+# ========================================
+
+# Example Using Demo Data
+@tool
+def get_photo_spots(city: str) -> str:
+    """
+    Find the best Instagram-worthy photo spots in a city.
+
+    Args:
+        city: City name
+
+    Returns:
+        List of photo spots
+    """
+    # Import the data right here if needed
+    from demo_data.attractions import PHOTO_SPOTS
+
+    # Get spots for the city, or provide generic suggestions
+    spots = PHOTO_SPOTS.get(city, ["City Center", "Main Square", "Waterfront", "Historic District"])
+
+    result = f"📸 Best Photo Spots in {city}:\n\n"
+    for i, spot in enumerate(spots, 1):
+        result += f"{i}. {spot}\n"
+
+    result += "\n💡 Tip: Golden hour (sunrise/sunset) is best for photos!"
+    return result
+
+
+# Super Simple Example: Packing List
+@tool
+def suggest_packing_list(destination: str, days: int, season: str) -> str:
+    """
+    Suggest what to pack for a trip.
+
+    Args:
+        destination: Where the traveler is going
+        days: Number of days
+        season: summer, winter, spring, fall
+
+    Returns:
+        Packing suggestions
+    """
+    # See how simple this is? Just return helpful text!
+    return f"""
+    Packing List for {destination} ({days} days, {season}):
+
+    Essentials:
+    - Passport and travel documents
+    - {days} sets of clothes
+    - Comfortable walking shoes
+    - Phone charger and adapter
+
+    {season.title()} specific:
+    - {'Sunscreen and hat' if season == 'summer' else 'Warm jacket and layers'}
+    - {'Swimsuit' if season == 'summer' else 'Umbrella'}
+
+    Don't forget: medications, toiletries, and a good book!
+    """
+
+
+# Another Simple Example: Local Phrases
+@tool
+def get_useful_phrases(destination: str) -> str:
+    """
+    Get useful local phrases for a destination.
+
+    Args:
+        destination: The country or city
+
+    Returns:
+        Common phrases in the local language
+    """
+    # You can use simple if/else or just return generic helpful info!
+    return f"""
+    Useful phrases for {destination}:
+
+    - Hello / Goodbye
+    - Please / Thank you
+    - Where is...?
+    - How much does this cost?
+    - I don't speak [language]
+    - Can you help me?
+    - Do you speak English?
+
+    Tip: Download a translation app before you go!
+    """
+
+
+# ========================================
+# Slightly More Advanced Examples
 # ========================================
 
 # Example 1: Restaurant Recommender
