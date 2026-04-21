@@ -8,6 +8,9 @@ unternehmer_env/
 
 # Workshop instructor files
 WORKSHOP_GUIDE.md
+setup.sh
+setup.bat
+test_workshop.py
 
 # Python
 __pycache__/

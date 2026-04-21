@@ -98,6 +98,9 @@ CURRENCY_INFO = {
     "Thailand": {"currency": "Thai Baht (฿)", "symbol": "฿", "code": "THB", "tip": "Carry small bills for markets and taxis"},
     "UK": {"currency": "British Pound (£)", "symbol": "£", "code": "GBP", "tip": "Cards widely accepted"},
     "USA": {"currency": "US Dollar ($)", "symbol": "$", "code": "USD", "tip": "Credit cards almost universal"},
+    "France": {"currency": "Euro (€)", "symbol": "€", "code": "EUR", "tip": "Cards widely accepted, some small shops cash only"},
+    "Spain": {"currency": "Euro (€)", "symbol": "€", "code": "EUR", "tip": "Cards accepted, small amounts may need cash"},
+    "Italy": {"currency": "Euro (€)", "symbol": "€", "code": "EUR", "tip": "Cash preferred in small establishments"},
 }
 
 PACKING_ESSENTIALS = {

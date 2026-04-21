@@ -8,7 +8,7 @@ Welcome to the **AWS Strands SDK Workshop**! In this hands-on session, you'll le
 
 ### Option 1: Use Our Demo Data
 **Don't spend time creating mock data!** We've provided a complete `demo_data/` folder with:
-- ✈️ Flights, 🏨 Hotels, 🍽️ Restaurants, 🎭 Attractions, ☀️ Weather, 🗺️ Travel Info
+- ✈️ Flights, 🏨 Hotels, 🍽️ Restaurants, 🎭 Attractions, ☀️ Weather, 🗺️ Travel Info, 🌍 Destinations
 
 **All existing agents already use this data** - just copy their pattern!
 
@@ -137,6 +137,7 @@ The `demo_data/` folder contains:
 - 🎭 **Attractions** - Tourist spots and activities
 - ☀️ **Weather** - Seasonal weather patterns
 - 🗺️ **Travel Info** - Visa requirements, phrases, packing lists, budgets
+- 🌍 **Destinations** - City guides, local tips by category
 
 **📖 See `demo_data/README.md` for complete documentation and examples!**
 
@@ -297,10 +298,13 @@ UnternehmerTUM_Workshop/
 │   └── template_tools.py      # 🎯 YOUR TOOLS - Create here!
 ├── demo_data/                  # 🎯 Ready-to-use datasets!
 │   ├── README.md              # How to use demo data
+│   ├── flights.py             # Airlines, routes, prices
+│   ├── hotels.py              # Hotels with ratings, amenities
 │   ├── restaurants.py         # Restaurant data
 │   ├── attractions.py         # Tourist attractions
-│   ├── travel_info.py         # Visa, phrases, packing
-│   └── weather.py             # Weather patterns
+│   ├── weather.py             # Weather patterns
+│   ├── travel_info.py         # Visa, phrases, packing, currency
+│   └── destinations.py        # City guides, local tips
 ├── .env.example                # Environment template
 ├── requirements.txt            # Python dependencies
 └── README.md                   # This file
@@ -366,7 +370,8 @@ def find_photo_spots(city: str) -> str:
 | `restaurants.py` | Restaurants with cuisines, ratings, prices | Food recommendation |
 | `attractions.py` | Tourist spots, activities, photo locations | Itinerary planning |
 | `weather.py` | Seasonal patterns, best visit times | Weather advisors |
-| `travel_info.py` | Visa, phrases, packing lists, budgets | Travel prep agents |
+| `travel_info.py` | Visa, phrases, packing lists, budgets, currency | Travel prep agents |
+| `destinations.py` | City guides, local tips, best times to visit | Destination guides |
 
 ### 🔍 How Existing Agents Use It:
 
@@ -380,10 +385,16 @@ from demo_data.flights import AIRLINES, FLIGHT_ROUTES, DEPARTURE_TIMES
 from demo_data.hotels import HOTELS, ROOM_TYPE_PRICES
 ```
 
-**Weather Agent** uses:
+**Itinerary Agent** uses:
 ```python
 from demo_data.weather import SEASONAL_WEATHER
 from demo_data.attractions import ATTRACTIONS, ACTIVITY_TYPES
+```
+
+**Destination Agent** uses:
+```python
+from demo_data.travel_info import CURRENCY_INFO, LOCAL_CUSTOMS, USEFUL_PHRASES
+from demo_data.destinations import CITY_GUIDES, TRAVEL_TIPS
 ```
 
 ### Three Options for Your Agent:
