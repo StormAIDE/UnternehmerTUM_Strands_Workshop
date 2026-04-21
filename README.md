@@ -277,7 +277,7 @@ restaurant_agent = create_restaurant_agent(model)
 
 **Edit 3: Add to agents list (same line 64)**
 ```python
-agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, template_agent, restaurant_agent]
+agents = [flight_agent, hotel_agent, budget_agent, destination_agent, restaurant_agent]
 ```
 
 ### Step 5: Test Your Agent
@@ -411,12 +411,6 @@ from demo_data.flights import AIRLINES, FLIGHT_ROUTES, DEPARTURE_TIMES
 **Hotel Agent** uses:
 ```python
 from demo_data.hotels import HOTELS, ROOM_TYPE_PRICES
-```
-
-**Itinerary Agent** uses:
-```python
-from demo_data.weather import SEASONAL_WEATHER
-from demo_data.attractions import ATTRACTIONS, ACTIVITY_TYPES
 ```
 
 **Destination Agent** uses:
