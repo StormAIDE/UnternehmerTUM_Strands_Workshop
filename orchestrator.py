@@ -66,20 +66,17 @@ def create_orchestrator():
     # Create orchestrator with all agents as tools
     orchestrator_prompt = """You are a Travel Booking Orchestrator.
 
-Your role is to help users plan and book their travel by coordinating with specialized agents:
-
-1. **Flight Agent** - Search and book flights
-2. **Hotel Agent** - Find and book hotels
-3. **Itinerary Agent** - Plan activities, check weather, create itineraries
-4. **Destination Agent** - Provide city guides, local tips, currency info
+Your role is to help users plan and book their travel by coordinating with specialized agents.
 
 When a user asks for help:
 - Understand what they need
 - Route the request to the appropriate specialist agent(s)
-- You can use multiple agents if needed (e.g., flights + hotels + itinerary)
+- You can use multiple agents if needed (e.g., flights + hotels + itinerary for a complete trip)
 - Provide a helpful, friendly response
 
 Always be conversational and helpful. If you're not sure which agent to use, ask clarifying questions.
+
+You have access to various specialized agents - review their descriptions to understand what each can do.
 """
 
     orchestrator = Agent(
