@@ -4,6 +4,9 @@ Hotel booking tools - Mock implementations for workshop
 from strands import tool
 import random
 
+# Import demo data
+from demo_data.hotels import HOTELS, DEFAULT_HOTELS
+
 
 @tool
 def find_hotels(city: str, checkin_date: str, checkout_date: str, guests: int = 2) -> str:
@@ -19,23 +22,22 @@ def find_hotels(city: str, checkin_date: str, checkout_date: str, guests: int = 
     Returns:
         List of available hotels with details
     """
-    hotel_names = [
-        "Grand Hotel Central", "Riverside Luxury Suites", "Urban Boutique Hotel",
-        "Seaside Resort & Spa", "Historic Palace Hotel"
-    ]
+    # Get hotels from demo data
+    city_hotels = HOTELS.get(city, DEFAULT_HOTELS)
+
+    # Select 3 random hotels
+    selected = random.sample(city_hotels, min(3, len(city_hotels)))
 
     hotels = []
-    for i in range(3):
-        name = random.choice(hotel_names)
-        rating = round(random.uniform(4.0, 4.9), 1)
-        price_per_night = random.randint(80, 350)
+    for i, hotel in enumerate(selected, 1):
+        amenities = ", ".join(hotel["amenities"][:4])  # Show first 4 amenities
 
         hotels.append(
-            f"Hotel {i+1}: {name}\n"
-            f"  Location: {city} City Center\n"
-            f"  Rating: ⭐ {rating}/5.0\n"
-            f"  Price: €{price_per_night}/night\n"
-            f"  Amenities: WiFi, Breakfast, Pool, Gym\n"
+            f"Hotel {i}: {hotel['name']}\n"
+            f"  Location: {hotel['location']}, {city}\n"
+            f"  Rating: ⭐ {hotel['rating']}/5.0 | {'⭐' * hotel['stars']}\n"
+            f"  Price: €{hotel['price_per_night']}/night\n"
+            f"  Amenities: {amenities}\n"
         )
 
     return "\n".join(hotels)
@@ -53,12 +55,18 @@ def check_rooms(hotel_name: str, room_type: str) -> str:
     Returns:
         Room availability and pricing
     """
+    from demo_data.hotels import ROOM_TYPE_PRICES
+
     available_rooms = random.randint(2, 8)
-    base_price = 120 if room_type == "standard" else 200 if room_type == "deluxe" else 350
+
+    # Calculate price based on room type
+    room_type_title = room_type.title()
+    multiplier = ROOM_TYPE_PRICES.get(room_type_title, 1.0)
+    base_price = int(150 * multiplier)  # Base standard room is €150
 
     return (
         f"Room Availability - {hotel_name}\n\n"
-        f"Room Type: {room_type.capitalize()}\n"
+        f"Room Type: {room_type_title}\n"
         f"Available Rooms: {available_rooms}\n"
         f"Price: €{base_price}/night\n"
         f"Max Occupancy: 2-3 guests\n"
@@ -81,7 +89,10 @@ def book_hotel(hotel_name: str, room_type: str, guest_name: str, guest_email: st
     Returns:
         Booking confirmation
     """
-    confirmation_number = f"HTL{random.randint(10000, 99999)}"
+    from demo_data.hotels import BOOKING_CONFIRMATION_PREFIXES
+
+    prefix = random.choice(BOOKING_CONFIRMATION_PREFIXES)
+    confirmation_number = f"{prefix}{random.randint(10000, 99999)}"
 
     return (
         f"🏨 Hotel Booked Successfully!\n\n"

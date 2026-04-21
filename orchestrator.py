@@ -9,9 +9,13 @@ from dotenv import load_dotenv
 # Import specialized agents
 from agents.flight_agent import create_flight_agent
 from agents.hotel_agent import create_hotel_agent
-from agents.itinerary_agent import create_itinerary_agent
+from agents.budget_agent import create_budget_agent
 from agents.destination_agent import create_destination_agent
-from agents.template_agent import create_template_agent
+
+# 🎯 WORKSHOP PARTICIPANTS: To add your custom agent:
+# 1. Create your_agent.py in agents/ folder
+# 2. Add import here: from agents.your_agent import create_your_agent
+# 3. Create instance below (line ~57) and add to agents list
 
 # Load environment variables
 load_dotenv()
@@ -48,35 +52,31 @@ def create_orchestrator():
     # Create all specialized agents
     flight_agent = create_flight_agent(model)
     hotel_agent = create_hotel_agent(model)
-    itinerary_agent = create_itinerary_agent(model)
+    budget_agent = create_budget_agent(model)  # Uses community tools!
     destination_agent = create_destination_agent(model)
 
-    # Include template agent (student's custom agent)
-    try:
-        template_agent = create_template_agent(model)
-        agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, template_agent]
-    except Exception as e:
-        print(f"Note: Template agent not fully configured yet: {e}")
-        agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent]
+    # 🎯 WORKSHOP PARTICIPANTS: Create your custom agent instances here
+    # Example: restaurant_agent = create_restaurant_agent(model)
+
+    # Add all agents to this list
+    agents = [flight_agent, hotel_agent, budget_agent, destination_agent]
+    # 🎯 WORKSHOP PARTICIPANTS: Add your agents here
+    # Example: agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, restaurant_agent]
 
     # Create orchestrator with all agents as tools
     orchestrator_prompt = """You are a Travel Booking Orchestrator.
 
-Your role is to help users plan and book their travel by coordinating with specialized agents:
-
-1. **Flight Agent** - Search and book flights
-2. **Hotel Agent** - Find and book hotels
-3. **Itinerary Agent** - Plan activities, check weather, create itineraries
-4. **Destination Agent** - Provide city guides, local tips, currency info
-5. **Template Agent** - Custom agent built by workshop participants
+Your role is to help users plan and book their travel by coordinating with specialized agents.
 
 When a user asks for help:
 - Understand what they need
 - Route the request to the appropriate specialist agent(s)
-- You can use multiple agents if needed (e.g., flights + hotels + itinerary)
+- You can use multiple agents if needed (e.g., flights + hotels + itinerary for a complete trip)
 - Provide a helpful, friendly response
 
 Always be conversational and helpful. If you're not sure which agent to use, ask clarifying questions.
+
+You have access to various specialized agents - review their descriptions to understand what each can do.
 """
 
     orchestrator = Agent(

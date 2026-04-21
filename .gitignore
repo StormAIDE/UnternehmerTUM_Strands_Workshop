@@ -8,6 +8,10 @@ unternehmer_env/
 
 # Workshop instructor files
 WORKSHOP_GUIDE.md
+setup.sh
+setup.bat
+test_workshop.py
+CLAUDE.md
 
 # Python
 __pycache__/
@@ -33,6 +37,3 @@ __pycache__/
 dist/
 build/
 *.egg-info/
-
-WORKSHOP_GUIDE.md
-CLAUDE.md
