@@ -93,7 +93,7 @@ def main():
         agents_info = {
             "✈️ Flight Agent": "Search and book flights",
             "🏨 Hotel Agent": "Find and book hotels",
-            "📅 Itinerary Agent": "Plan activities and itineraries",
+            "💰 Budget Agent": "Calculate trip costs (uses community tools!)",
             "🗺️ Destination Agent": "City guides and local tips",
             "⭐ Your Custom Agent": "Built by workshop participants!"
         }
@@ -107,9 +107,9 @@ def main():
         example_queries = [
             "Find flights from Munich to Tokyo in June",
             "Show me hotels in Paris for next week",
-            "Plan a 3-day itinerary for Barcelona",
+            "Calculate budget: flights 500€, hotel 300€/night 3 nights",
             "Tell me about local culture in Bangkok",
-            "What's the weather like in Rome?"
+            "What are the best attractions in Rome?"
         ]
 
         for query in example_queries:

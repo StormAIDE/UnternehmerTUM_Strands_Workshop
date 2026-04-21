@@ -26,10 +26,9 @@ Welcome to the **AWS Strands SDK Workshop**! In this hands-on session, you'll le
 
 ```python
 # Example: Using a community tool
-from strands_tools import calculator
+from strands_tools.calculator import calculator
 
 agent = Agent(tools=[calculator])
-
 ```
 
 ---
@@ -39,7 +38,7 @@ agent = Agent(tools=[calculator])
 A multi-agent travel booking system with:
 - **Flight Agent** - Search and book flights
 - **Hotel Agent** - Find and book accommodations
-- **Itinerary Agent** - Plan activities and check weather
+- **Budget Agent** - Calculate trip costs (uses community tools!)
 - **Destination Agent** - City guides and local tips
 - **Your Custom Agent** - Build your own specialist!
 
@@ -126,6 +125,32 @@ cat demo_data/README.md
 
 ---
 
+## 🌟 Learn from Budget Agent (Community Tools Example!)
+
+**The Budget Agent shows you how to use community tools!** Check out `agents/budget_agent.py`:
+
+```python
+# Import community tools - no custom @tool functions needed!
+from strands_tools.calculator import calculator
+from strands_tools.current_time import current_time
+
+def create_budget_agent(model):
+    agent = Agent(
+        name="budget_agent",
+        tools=[calculator, current_time]  # Just add them to the list!
+    )
+    return agent
+```
+
+**Key Learnings:**
+1. ✅ No need to create `@tool` functions - just import
+2. ✅ Community tools work seamlessly with custom agents
+3. ✅ 46 tools available: calculator, http_request, file_read, etc.
+
+**Try it:** "Calculate my trip budget: flights 500€, hotel 300€/night for 3 nights"
+
+---
+
 ### ⚡ IMPORTANT: Use Demo Data (No Mock Data Creation Needed!)
 
 **We've provided ready-to-use datasets in the `demo_data/` folder so you can focus on learning Strands SDK!**
@@ -149,13 +174,13 @@ The `demo_data/` folder contains:
 
 Pick one or create your own:
 - 🍽️ **Restaurant Recommender** - Find best local restaurants
-- 💰 **Budget Calculator** - Estimate trip costs
-- ☀️ **Weather Advisor** - Weather-based travel tips
-- 📋 **Visa Checker** - Check visa requirements
-- 🗣️ **Language Phrasebook** - Essential local phrases
-- 🚇 **Transport Guide** - Local transportation tips
+- 📅 **Itinerary Planner** - Plan day-by-day activities and schedules
+- ☀️ **Weather Advisor** - Weather forecasts and packing suggestions
+- 📋 **Visa Checker** - Check visa requirements by country
+- 🗣️ **Language Phrasebook** - Essential local phrases and translations
+- 🚇 **Transport Guide** - Local transportation tips and routes
 - 📸 **Photo Spots Finder** - Instagram-worthy locations
-- 🎒 **Packing List Generator** - Smart packing suggestions
+- 🎒 **Packing List Generator** - Smart packing suggestions based on destination
 
 ### Step 2: Create Your Tool File
 
@@ -271,7 +296,8 @@ agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, templat
 
 ### 📝 Quick Reference: What Files to Look At
 
-- **Example tools**: `tools/flight_tools.py`, `tools/hotel_tools.py`
+- **Community tools example**: `agents/budget_agent.py` ⭐ (uses calculator & current_time tools)
+- **Custom tools examples**: `tools/flight_tools.py`, `tools/hotel_tools.py`
 - **Example agents**: `agents/flight_agent.py`, `agents/hotel_agent.py`
 - **Template files**: `tools/template_tools.py`, `agents/template_agent.py` (for reference only - create your own files!)
 - **Demo data**: `demo_data/README.md` (all available datasets)
@@ -288,13 +314,12 @@ UnternehmerTUM_Workshop/
 ├── agents/
 │   ├── flight_agent.py        # Flight agent (imports flight_tools)
 │   ├── hotel_agent.py         # Hotel agent (imports hotel_tools)
-│   ├── itinerary_agent.py     # Trip planning agent
+│   ├── budget_agent.py        # ⭐ Budget agent (uses community tools!)
 │   ├── destination_agent.py   # City guides agent
 │   └── template_agent.py      # 🎯 YOUR AGENT - Edit this!
 ├── tools/
 │   ├── flight_tools.py        # Flight tools
 │   ├── hotel_tools.py         # Hotel tools
-│   ├── weather_tools.py       # Weather tools
 │   └── template_tools.py      # 🎯 YOUR TOOLS - Create here!
 ├── demo_data/                  # 🎯 Ready-to-use datasets!
 │   ├── README.md              # How to use demo data
@@ -328,13 +353,16 @@ UnternehmerTUM_Workshop/
    │    │    │    │
    ▼    ▼    ▼    ▼
 ┌────┐┌────┐┌────┐┌────┐┌────────┐
-│Flight│Hotel│Itinerary│Dest│ YOUR  │
-│Agent││Agent││Agent ││Agent││ AGENT │
+│Flight│Hotel│Budget│Dest│ YOUR  │
+│Agent││Agent││Agent││Agent││ AGENT │
 └──┬─┘└──┬─┘└──┬─┘└──┬─┘└───┬────┘
    │     │     │     │     │
    ▼     ▼     ▼     ▼     ▼
-[Tools] [Tools] [Tools] [Tools] [Tools]
+[Custom][Custom][Community][Custom][Your]
+[Tools] [Tools]  [Tools]  [Tools] [Tools]
 ```
+
+**Budget Agent uses community tools (calculator, current_time) - check it out!**
 
 Each agent has specialized tools and can work independently or together!
 
@@ -428,13 +456,9 @@ def find_restaurants(city: str) -> str:
 
 **Option 3: Strands Community Tools (Advanced)**
 ```python
-from strands_community_tools import web_search
+from strands_tools.calculator import calculator
 
-@tool
-def search_restaurants(city: str, cuisine: str) -> str:
-    """Search for restaurants using live web search."""
-    query = f"best {cuisine} restaurants in {city}"
-    return web_search(query)
+agent = Agent(tools=[calculator])
 ```
 
 **📖 Resources:**
@@ -505,10 +529,10 @@ def my_tool(category: str) -> str:
 - "Find a luxury hotel in Rome near the city center"
 - "What are the best hotels in Barcelona?"
 
-### Itineraries
-- "Plan a 3-day itinerary for Amsterdam"
-- "What activities can I do in Lisbon?"
-- "What's the weather like in Berlin?"
+### Budget (Community Tools!)
+- "Calculate my trip budget: flights 500€, hotel 300€/night for 3 nights, meals 60€/day"
+- "What's today's date and estimate costs for next month trip?"
+- "Budget breakdown for 5-day trip to Paris"
 
 ### Destinations
 - "Tell me about traveling to Tokyo"
@@ -534,7 +558,7 @@ def my_tool(category: str) -> str:
 - ✅ Look at terminal for error messages
 
 ### Custom agent not showing
-- ✅ Save `template_agent.py` file
+- ✅ Save `<Your_Agent>.py` file
 - ✅ Restart Streamlit app (Ctrl+C, then run again)
 - ✅ Check for Python syntax errors
 

@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Import specialized agents
 from agents.flight_agent import create_flight_agent
 from agents.hotel_agent import create_hotel_agent
-from agents.itinerary_agent import create_itinerary_agent
+from agents.budget_agent import create_budget_agent
 from agents.destination_agent import create_destination_agent
 
 # 🎯 WORKSHOP PARTICIPANTS: To add your custom agent:
@@ -52,14 +52,14 @@ def create_orchestrator():
     # Create all specialized agents
     flight_agent = create_flight_agent(model)
     hotel_agent = create_hotel_agent(model)
-    itinerary_agent = create_itinerary_agent(model)
+    budget_agent = create_budget_agent(model)  # Uses community tools!
     destination_agent = create_destination_agent(model)
 
     # 🎯 WORKSHOP PARTICIPANTS: Create your custom agent instances here
     # Example: restaurant_agent = create_restaurant_agent(model)
 
     # Add all agents to this list
-    agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent]
+    agents = [flight_agent, hotel_agent, budget_agent, destination_agent]
     # 🎯 WORKSHOP PARTICIPANTS: Add your agents here
     # Example: agents = [flight_agent, hotel_agent, itinerary_agent, destination_agent, restaurant_agent]
 
