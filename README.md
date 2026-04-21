@@ -44,7 +44,7 @@ A multi-agent travel booking system with:
 
 ## 📋 Prerequisites
 
-- Python 3.9 or higher
+- Python 3.11 or higher
 - AWS Account with Bedrock access
 - Basic Python knowledge (helpful but not required!)
 
