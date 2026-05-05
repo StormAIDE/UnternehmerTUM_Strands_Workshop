@@ -1,6 +1,6 @@
 # Core Dependencies
 strands-agents>=1.0.0
-strands-agents-tools>=1.0.0  # Optional: Pre-built community tools (web search, calculators, etc.)
+strands-agents-tools>=0.5.0  # Optional: Pre-built community tools (web search, calculators, etc.)
 streamlit>=1.31.0
 python-dotenv>=1.0.0
 
